@@ -21,7 +21,8 @@ import numpy as np
 
 
     TODO:
-        -
+        - Colourblind options with --cb [1, 2, 3]
+        - named amplicons from file or from bed
 
     ----------------------------------------------------------------------------
     MIT License
@@ -86,6 +87,8 @@ def main():
 
     parser.add_argument("--show", action="store_true",
                         help="Show plot rather than saving it")
+    parser.add_argument("-s", "--save",
+                        help="Save path")
 
 
     args = parser.parse_args()
@@ -93,6 +96,11 @@ def main():
 
     # print help if no arguments given
     if len(sys.argv) == 1:
+        parser.print_help(sys.stderr)
+        sys.exit(1)
+
+    if not args.show and not args.save:
+        print("No output method selected", file=sys.stderr)
         parser.print_help(sys.stderr)
         sys.exit(1)
 
@@ -315,9 +323,13 @@ def plot(args, bed_1, bed_2, vcfx_snv=None, vcfy_snv=None, vcfx_id=None, vcfy_id
     plt.tight_layout()
     if args.show:
         plt.show()
+    elif args.save:
+        save_file = args.save.rstrip("/") + "/" + sample_name + ".CoVarPlot.png"
+        plt.savefig(save_file, dpi=1000/hi)
     else:
         save_file = save_path + "/" + sample_name + ".CoVarPlot.png"
         plt.savefig(save_file, dpi=1000/hi)
+
 
 
 if __name__ == '__main__':
