@@ -89,6 +89,8 @@ def main():
                         help="Show plot rather than saving it")
     parser.add_argument("-s", "--save",
                         help="Save path")
+    parser.add_argument("-l", "--log", action="store_true",
+                        help="y-axis log scale")
 
 
     args = parser.parse_args()
@@ -309,6 +311,8 @@ def plot(args, bed_1, bed_2, vcfx_snv=None, vcfy_snv=None, vcfx_id=None, vcfy_id
 
     plt.axhline(y=20, color='grey', linestyle='--', label="20x coverage min")
 
+    if args.log:
+        plt.yscale("log")
     plt.xlabel("Genome position", fontsize=20)
     plt.ylabel("Depth", fontsize=20)
     plt.tick_params(labelsize=10)
