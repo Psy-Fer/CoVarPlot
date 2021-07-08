@@ -102,7 +102,7 @@ def main():
         sys.exit(1)
 
     if not args.show and not args.save:
-        print("No output method selected", file=sys.stderr)
+        sys.stderr.write("No output method selected")
         parser.print_help(sys.stderr)
         sys.exit(1)
 
