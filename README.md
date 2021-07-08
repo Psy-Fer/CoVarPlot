@@ -42,7 +42,7 @@ You might need tk or somthine like it for the --show option if you don't already
 
 Example command:
 
-    python3 covarplot.py -v sample1.pass.vcf.gz -d1 sample1.coverage_mask.txt.nCoV-2019_1.depths -d2 sample1.coverage_mask.txt.nCoV-2019_2.depths -b primer-schemes/eden/nCoV-2019/V1/nCoV-2019.scheme.bed --show
+    python3 covarplot.py -v example/plot_thickens_sample12_NB12.pass.vcf.gz -d1 example/plot_thickens_sample12_NB12.coverage_mask.txt.nCoV-2019_1.depths -d2 example/plot_thickens_sample12_NB12.coverage_mask.txt.nCoV-2019_2.depths -b example/nCoV-2019.scheme.bed --show -l
 
 If `--show` isn't used it wil save to the same path as the VCF file (as a .png). I'll add some save path features soon
 
