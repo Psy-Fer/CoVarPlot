@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 # Written by Nick Loman
+# Modified to work as standalone script by James Ferguson
 
 from copy import copy
 from collections import defaultdict
