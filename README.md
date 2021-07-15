@@ -23,13 +23,13 @@ python3.6 -m pip install pysam pandas Bio
 
 minimap2 -a -x map-ont -t 4 ~/interartic_bin/primer-schemes/eden/nCoV-2019/V1/nCoV-2019.reference.fasta ../plot_thickens_fastq_pass-NB07.fastq | samtools view -bS -F 4 - | samtools sort -o plot_thickens_sample7_NB07.sorted.bam
 
-python3.6 align_trim.py --normalise 200 /home/jamfer/Downloads/interartic_bin/primer-schemes/eden/nCoV-2019/V1/nCoV-2019.scheme.bed --start --remove-incorrect-pairs < plot_thickens_sample7_NB07.sorted.bam | samtools sort -T plot_thickens_sample7_NB07 - -o plot_thickens_sample7_NB07.trimmed.rg.sorted.bam
+python3.6 align_trim.py --normalise 200 ~/interartic_bin/primer-schemes/eden/nCoV-2019/V1/nCoV-2019.scheme.bed --start --remove-incorrect-pairs < plot_thickens_sample7_NB07.sorted.bam | samtools sort -T plot_thickens_sample7_NB07 - -o plot_thickens_sample7_NB07.trimmed.rg.sorted.bam
 
-python3.6 align_trim.py --normalise 200 /home/jamfer/Downloads/interartic_bin/primer-schemes/eden/nCoV-2019/V1/nCoV-2019.scheme.bed --remove-incorrect-pairs < plot_thickens_sample7_NB07.sorted.bam | samtools sort -T plot_thickens_sample7_NB07 - -o plot_thickens_sample7_NB07.primertrimmed.rg.sorted.bam
+python3.6 align_trim.py --normalise 200 ~/interartic_bin/primer-schemes/eden/nCoV-2019/V1/nCoV-2019.scheme.bed --remove-incorrect-pairs < plot_thickens_sample7_NB07.sorted.bam | samtools sort -T plot_thickens_sample7_NB07 - -o plot_thickens_sample7_NB07.primertrimmed.rg.sorted.bam
 
 samtools index plot_thickens_sample7_NB07.primertrimmed.rg.sorted.bam
 
-python3.6 make_depth_mask.py --store-rg-depths /home/jamfer/Downloads/interartic_bin/primer-schemes/eden/nCoV-2019/V1/nCoV-2019.reference.fasta plot_thickens_sample7_NB07.primertrimmed.rg.sorted.bam plot_thickens_sample7_NB07.coverage_mask.txt
+python3.6 make_depth_mask.py --store-rg-depths ~/interartic_bin/primer-schemes/eden/nCoV-2019/V1/nCoV-2019.reference.fasta plot_thickens_sample7_NB07.primertrimmed.rg.sorted.bam plot_thickens_sample7_NB07.coverage_mask.txt
 
 ```
 
