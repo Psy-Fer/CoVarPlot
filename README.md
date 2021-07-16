@@ -21,15 +21,15 @@ These are normally run in the regular artic pipeline
 
 python3.6 -m pip install pysam pandas Bio
 
-minimap2 -a -x map-ont -t 4 ~/interartic_bin/primer-schemes/eden/nCoV-2019/V1/nCoV-2019.reference.fasta ../plot_thickens_fastq_pass-NB07.fastq | samtools view -bS -F 4 - | samtools sort -o plot_thickens_sample7_NB07.sorted.bam
+minimap2 -a -x map-ont -t 4 ~/interartic_bin/primer-schemes/eden/nCoV-2019/V1/nCoV-2019.reference.fasta ../plot_thickens_fastq_pass-NB12.fastq | samtools view -bS -F 4 - | samtools sort -o plot_thickens_sample7_NB12.sorted.bam
 
-python3.6 align_trim.py --normalise 200 ~/interartic_bin/primer-schemes/eden/nCoV-2019/V1/nCoV-2019.scheme.bed --start --remove-incorrect-pairs < plot_thickens_sample7_NB07.sorted.bam | samtools sort -T plot_thickens_sample7_NB07 - -o plot_thickens_sample7_NB07.trimmed.rg.sorted.bam
+python3.6 align_trim.py --normalise 200 ~/interartic_bin/primer-schemes/eden/nCoV-2019/V1/nCoV-2019.scheme.bed --start --remove-incorrect-pairs < plot_thickens_sample7_NB12.sorted.bam | samtools sort -T plot_thickens_sample7_NB12 - -o plot_thickens_sample7_NB12.trimmed.rg.sorted.bam
 
-python3.6 align_trim.py --normalise 200 ~/interartic_bin/primer-schemes/eden/nCoV-2019/V1/nCoV-2019.scheme.bed --remove-incorrect-pairs < plot_thickens_sample7_NB07.sorted.bam | samtools sort -T plot_thickens_sample7_NB07 - -o plot_thickens_sample7_NB07.primertrimmed.rg.sorted.bam
+python3.6 align_trim.py --normalise 200 ~/interartic_bin/primer-schemes/eden/nCoV-2019/V1/nCoV-2019.scheme.bed --remove-incorrect-pairs < plot_thickens_sample7_NB12.sorted.bam | samtools sort -T plot_thickens_sample7_NB12 - -o plot_thickens_sample7_NB12.primertrimmed.rg.sorted.bam
 
-samtools index plot_thickens_sample7_NB07.primertrimmed.rg.sorted.bam
+samtools index plot_thickens_sample7_NB12.primertrimmed.rg.sorted.bam
 
-python3.6 make_depth_mask.py --store-rg-depths ~/interartic_bin/primer-schemes/eden/nCoV-2019/V1/nCoV-2019.reference.fasta plot_thickens_sample7_NB07.primertrimmed.rg.sorted.bam plot_thickens_sample7_NB07.coverage_mask.txt
+python3.6 make_depth_mask.py --store-rg-depths ~/interartic_bin/primer-schemes/eden/nCoV-2019/V1/nCoV-2019.reference.fasta plot_thickens_sample7_NB12.primertrimmed.rg.sorted.bam plot_thickens_sample7_NB12.coverage_mask.txt
 
 ```
 
@@ -40,15 +40,15 @@ Feedback is welcome.
 
 Use python3, and install the libs needed.
 
-    pip3 install matplotlib numpy
+    python3 -m pip install matplotlib numpy
 
-You might need tk or somthine like it for the --show option if you don't already have it installed.
+You might need tk or somthing like it for the --show option if you don't already have it installed.
 
 ### Run
 
 
     usage: covarplot.py [-h] [--version] [-v VCF_FILE] [-d1 DEPTH_FILE_1]
-                    [-d2 DEPTH_FILE_2] [-b BED] [--show]
+                        [-d2 DEPTH_FILE_2] [-b BED] [--show] [-s SAVE] [-l]
 
     Plots for interArtic
 
@@ -62,6 +62,9 @@ You might need tk or somthine like it for the --show option if you don't already
       -d2 DEPTH_FILE_2, --depth_file_2 DEPTH_FILE_2
                             full path to depth file 2 (default: None)
       -b BED, --bed BED     full path to scheme bed file (default: None)
+      --show                Show plot rather than saving it (default: False)
+      -s SAVE, --save SAVE  Save path (default: None)
+      -l, --log             y-axis log scale (default: False)
 
 
 Example command:
