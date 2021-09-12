@@ -16,13 +16,15 @@ import numpy as np
 
 
     ----------------------------------------------------------------------------
-    version 0.0 - initial
-
+    version 0.0.0 - initial
+    version 0.0.1 - save plots and --log options added
+    version 0.0.2 - variant depth calculations fixed
 
 
     TODO:
         - Colourblind options with --cb [1, 2, 3]
         - named amplicons from file or from bed
+        - identify low coverage regions and highlight
 
     ----------------------------------------------------------------------------
     MIT License
@@ -63,7 +65,7 @@ def main():
     '''
     main func directing which plots to make
     '''
-    VERSION = "0.0.1"
+    VERSION = "0.0.2"
     NAME = "interArtic plots"
     parser = MyParser(
         description="Plots for interArtic",
