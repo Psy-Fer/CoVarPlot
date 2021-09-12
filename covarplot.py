@@ -192,12 +192,27 @@ def vcf_pipeline(args):
             l = l.strip('\n')
             l = l.split('\t')
             row = dict(zip(header, l))
-            if len(row["REF"]) == len(row["ALT"]):
-                x_snv.append(int(row["POS"]))
-                y_snv.append(int(row["INFO"].split(";")[0].split("=")[1]))
+            # how to calculate variant depths
+            # medaka: depth = AC
+            # nanopolish: depth = BaseCalledReadsWithVariant
+            var_depth = -1
+            for i in row["INFO"].split(";"):
+                # sys.stderr.write("vcf_INFO: {}\n".format(i))
+                if len(i) > 0:
+                    name, result = i.split("=")
+                    if name == "AC":
+                        var_depth = int(result.split(",")[-1])
+                    elif name == "BaseCalledReadsWithVariant":
+                        var_depth = int(result)
+            if var_depth == -1:
+                sys.stderr.write("var_depth not set for position: {}\n".format(row["POS"]))
             else:
-                x_id.append(int(row["POS"]))
-                y_id.append(int(row["INFO"].split(";")[0].split("=")[1]))
+                if len(row["REF"]) == len(row["ALT"]):
+                    x_snv.append(int(row["POS"]))
+                    y_snv.append(var_depth)
+                else:
+                    x_id.append(int(row["POS"]))
+                    y_id.append(var_depth)
 
     if x_snv:
         nx_snv = np.array(x_snv)
@@ -258,6 +273,8 @@ def plot(args, bed_1, bed_2, vcfx_snv=None, vcfy_snv=None, vcfx_id=None, vcfy_id
     """
     Plot everything separate or at once
     """
+    if not args.show:
+        plt.switch_backend('Agg')
     save_path = ""
     sample_name = ""
     fig, ax = plt.subplots()
