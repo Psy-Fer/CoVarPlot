@@ -65,7 +65,7 @@ def main():
     '''
     main func directing which plots to make
     '''
-    VERSION = "0.0.2"
+    VERSION = "0.0.3"
     NAME = "interArtic plots"
     parser = MyParser(
         description="Plots for interArtic",
@@ -141,7 +141,7 @@ def get_bed(args):
             l = l.strip('\n')
             l = l.strip('\t')
             l = l.split('\t')
-            print(l)
+            #print(l)
             if "alt" in l[3]:
                 continue
             if l[4][-1] == '1':
@@ -181,8 +181,15 @@ def vcf_pipeline(args):
     y_id = []
     header = []
     row = {}
+    clair3 = False
     with gzip.open(args.vcf_file, 'rt') as f:
-        for l in f:
+        for line_number, l in enumerate(f):
+            
+            # check if VCF is variant called with clair and we have to patch the INFO and FORMAT fields
+            if line_number == 2 and 'Clair3' in l:
+                clair3 = True
+                print(f"Detected Clair3 as variant caller of VCF '{args.vcf_file}', patching variant depth compatibility.")
+
             if l[:2] == "##":
                 continue
             if l[0] == "#":
@@ -198,14 +205,26 @@ def vcf_pipeline(args):
             # medaka: depth = AC
             # nanopolish: depth = BaseCalledReadsWithVariant
             var_depth = -1
-            for i in row["INFO"].split(";"):
-                # sys.stderr.write("vcf_INFO: {}\n".format(i))
-                if len(i) > 0:
-                    name, result = i.split("=")
-                    if name == "AC":
-                        var_depth = int(result.split(",")[-1])
-                    elif name == "BaseCalledReadsWithVariant":
-                        var_depth = int(result)
+
+            if not clair3:
+                for i in row["INFO"].split(";"):
+                    # sys.stderr.write("vcf_INFO: {}\n".format(i))
+                    if len(i) > 0:
+                        name, result = i.split("=")
+                        if name == "AC":
+                            var_depth = int(result.split(",")[-1])
+                        elif name == "BaseCalledReadsWithVariant":
+                            var_depth = int(result)
+            else:
+                # for whatever reason clair3 puts the read depth into the FORMAT field and its value into SAMPLE:
+                # ##FORMAT=<ID=DP,Number=1,Type=Integer,Description="Approximate read depth (reads 1. with MQ below 5 or an user-specified threshold, or 2. selected by 'samtools view -F 2316', are filtered)">
+                field_names  = row['FORMAT'].split(':')
+                field_values = row['SAMPLE'].split(':')
+                
+                # check field is available and name is correct
+                if len(field_names) >=2 and field_names[2] == 'DP' and len(field_values) >= 2:
+                    var_depth = row['SAMPLE'].split(':')[2]
+
             if var_depth == -1:
                 sys.stderr.write("var_depth not set for position: {}\n".format(row["POS"]))
             else:
@@ -315,7 +334,7 @@ def plot(args, bed_1, bed_2, vcfx_snv=None, vcfy_snv=None, vcfx_id=None, vcfy_id
         sys.stderr.write("this really shouldn't error. args: {}".format(args))
 
 
-    print(bed_1)
+    #print(bed_1)
     # add amplicon to legend only once
     for i, j in bed_1[:1]:
         ax.add_patch(plt.Rectangle((i,-20),j-i, 15,facecolor='silver',
